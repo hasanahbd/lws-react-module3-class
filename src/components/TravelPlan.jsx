@@ -1,23 +1,28 @@
 import { initialTravelPlan } from "../data/places-normalized";
-
-import { useState } from "react";
+import { useImmer } from "use-immer";
 import PlaceTree from "./PlaceTree";
 
 export default function TravelPlan() {
-  const [plan, setPlan] = useState(initialTravelPlan);
+
+  const [plan, updatePlan] = useImmer(initialTravelPlan);
+  console.log(plan);
   const root = plan[0];
   const planetIds = root.childIds;
-  console.log(plan);
-  const handleVisited = (parentId, visitedPlaceId) => { // parentId is the id of the parent of the visited place, visitedPlaceId is the id of the visited place
-    const parent = plan[parentId]; // get the parent object
-    const updateParent = { // create a new parent object
-      ...parent, //
-      childIds: parent.childIds.filter((id) => id !== visitedPlaceId), // remove visited place from childIds
-    };
-    
-    setPlan({
-      ...plan, // copy the plan object
-      [parentId]: updateParent, // update the parent object
+  function deletePlaces(draft, placeId) { // draft is the plan, placeId is the id of the place to be deleted
+    const place = draft[placeId];
+    place.childIds.forEach((childId) => {
+      deletePlaces(draft, childId);
+    });
+    delete draft[placeId]; // delete the place from the plan
+  }
+  const handleVisited = (parentId, visitedPlaceId) => {
+    // parentId is the id of the parent of the visited place, visitedPlaceId is the id of the visited place
+    updatePlan((draft) => { // draft is the plan, it is nature of useImmer
+      const parentPlace = draft[parentId]; // parentPlace is the parent of the visited place
+      parentPlace.childIds = parentPlace.childIds.filter(
+        (id) => id !== visitedPlaceId
+      ); // remove the visited place from the childIds of the parent of the visited place
+      deletePlaces(draft, visitedPlaceId);
     });
   };
   return (
