@@ -1,12 +1,12 @@
 import AddTask from './components/AddTask.jsx';
 import TaskList from './components/TaskList.jsx';
-import { useReducer } from 'react';
 import TaskReducer from './reducers/TaskReducer.js';
+import {  useImmerReducer } from 'use-immer';
 
 export default function TaskApp() {
-  const [tasks, TaskDispatch] = useReducer(TaskReducer, initialTasks);
+  const [tasks, taskDispatch] = useImmerReducer(TaskReducer, initialTasks);
   function handleAddTask(text) {
-    TaskDispatch({
+    taskDispatch({
       type: 'added',
       id: nextId++,
       text: text,
@@ -14,14 +14,14 @@ export default function TaskApp() {
   }
 
   function handleChangeTask(task) {
-    TaskDispatch({
+    taskDispatch({
       type: 'changed',
       task: task,
     });
   }
 
   function handleDeleteTask(taskId) {
-    TaskDispatch({
+    taskDispatch({
       type: 'deleted',
       id: taskId,
     });
