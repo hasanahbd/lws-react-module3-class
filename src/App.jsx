@@ -1,48 +1,26 @@
-import AddTask from './components/AddTask.jsx';
-import TaskList from './components/TaskList.jsx';
-import TaskReducer from './reducers/TaskReducer.js';
-import {  useImmerReducer } from 'use-immer';
+import Heading from "./components/Heading.jsx";
+import Section from "./components/Section.jsx"
+import "./style.css"
 
-export default function TaskApp() {
-  const [tasks, taskDispatch] = useImmerReducer(TaskReducer, initialTasks);
-  function handleAddTask(text) {
-    taskDispatch({
-      type: 'added',
-      id: nextId++,
-      text: text,
-    });
-  }
-
-  function handleChangeTask(task) {
-    taskDispatch({
-      type: 'changed',
-      task: task,
-    });
-  }
-
-  function handleDeleteTask(taskId) {
-    taskDispatch({
-      type: 'deleted',
-      id: taskId,
-    });
-  }
-
+export default function App() {
   return (
-    <>
-      <h1>Prague itinerary</h1>
-      <AddTask onAddTask={handleAddTask} />
-      <TaskList
-        tasks={tasks}
-        onChangeTask={handleChangeTask}
-        onDeleteTask={handleDeleteTask}
-      />
-    </>
+    <Section >
+      <Heading>Title</Heading>
+      <Section >
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Section >
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Section >
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+          </Section>
+        </Section>
+      </Section>
+    </Section>
   );
 }
-
-let nextId = 3;
-const initialTasks = [
-  {id: 0, text: 'Visit Kafka Museum', done: true},
-  {id: 1, text: 'Watch a puppet show', done: false},
-  {id: 2, text: 'Lennon Wall pic', done: false},
-];
